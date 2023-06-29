@@ -74,7 +74,6 @@ protected:
     ssize_t size;
     bool processed{false}; // if the packet has been handled or not
     bool success{false}; // if write/read operation was a success or not
-    virtual void execute(int fd) = 0;
 
 public:
     /// @brief 
@@ -98,9 +97,6 @@ class I2CReadPacket : public I2CPacket
 {
     friend class I2CHandle;
 
-private:
-    virtual void execute(int fd) final;
-
 public:
     /// @brief 
     /// @param slave address of the I2C slave the packet is meant to be read from
@@ -114,7 +110,7 @@ public:
     /// @param data reference of type T to read the data into
     template<typename T>
     I2CReadPacket(int slave, T& data);
-    virtual ~I2CReadPacket() final;
+    ~I2CReadPacket();
 };
 
 
@@ -124,9 +120,6 @@ class I2CWritePacket : public I2CPacket
 {
     friend class I2CHandle;
 
-private:
-    virtual void execute(int fd) final;
-
 public:
     /// @brief 
     /// @param slave address of the I2C slave the packet is meant to be sent to
@@ -135,7 +128,7 @@ public:
     I2CWritePacket(int slave, const uint8_t *const buff, ssize_t size);
     template<typename T>
     I2CWritePacket(int slave, const T& data);
-    virtual ~I2CWritePacket() final;
+    ~I2CWritePacket();
 };
 
 /// @brief

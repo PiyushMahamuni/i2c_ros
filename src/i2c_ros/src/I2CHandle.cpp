@@ -37,29 +37,6 @@ template I2CReadPacket::I2CReadPacket<unsigned long>(int slave, unsigned long& d
 template I2CReadPacket::I2CReadPacket<unsigned int>(int slave, unsigned int& data);
 template I2CReadPacket::I2CReadPacket<uint8_t>(int slave, uint8_t& data);
 
-void I2CReadPacket::execute(int fd)
-{
-    processed = true;
-    if (ioctl(fd, I2C_SLAVE, slave) < 0)
-    {
-        // throw FailedToConnectException(slave);
-        std::cout << "[I2CHandle] Failed to connect to the slave " << slave << " through " << fd << '\n';
-        success = false;
-    }
-    if (read(fd, buff, size) != size)
-    {
-        // throw FailedToReadException(slave);
-        std::cout << "[I2CHandle] Failed to read from the slave: " << slave << " through " << fd << '\n';
-        success = false;
-    }
-    else
-    {
-        success = true;
-    }
-    std::cout << "[I2CHandle] Read from " << slave << " of " << size << " bytes successful\n";
-    return;
-}
-
 I2CWritePacket::I2CWritePacket(int slave, const uint8_t *const buff, ssize_t size) : I2CPacket{slave, const_cast<uint8_t* const>(buff), size}
 {
 }
@@ -81,29 +58,6 @@ template I2CWritePacket::I2CWritePacket<long>(int slave, const long& data);
 template I2CWritePacket::I2CWritePacket<unsigned long>(int slave, const unsigned long& data);
 template I2CWritePacket::I2CWritePacket<unsigned int>(int slave, const unsigned int& data);
 template I2CWritePacket::I2CWritePacket<uint8_t>(int slave, const uint8_t& data);
-
-void I2CWritePacket::execute(int fd)
-{
-    processed = true;
-    if (ioctl(fd, I2C_SLAVE, slave) < 0)
-    {
-        // throw FailedToConnectException(slave);
-        std::cout << "[I2CHandle] Failed to connect to slave " << slave << " thorugh " << fd << '\n';
-        success = false;
-    }
-    if (write(fd, buff, size) != size)
-    {
-        // throw FailedToWriteException(slave);
-        std::cout << "[I2CHandle] Failed to write to the slave: " << slave << " throught " << fd << '\n';
-        success = false;
-    }
-    else
-    {
-        success = true;
-    }
-    std::cout << "[I2CHandle] Write to the " << slave << " of " << size << " bytes successful\n";
-    return;
-}
 
 I2CHandle::I2CHandle(const char *bus) : bus{bus}, fd{open(bus, O_RDWR)}
 {

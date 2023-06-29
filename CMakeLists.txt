@@ -25,6 +25,7 @@ include_directories(
 add_library(I2CHandle
   src/i2c_ros/src/I2CHandle.cpp
 )
+
 add_library(I2CAxisServer
   src/i2c_ros/src/I2CAxisServer.cpp
 )

@@ -17,17 +17,15 @@ find_package(tf2_ros REQUIRED)
 find_package(geometry_msgs REQUIRED)
 
 # Include directories
-include_directories(
-  include
-)
+include_directories(include)
 
 # Create libraries
 add_library(I2CHandle
-  src/i2c_ros/src/I2CHandle.cpp
+  src/i2c_ros/I2CHandle.cpp
 )
 
 add_library(I2CAxisServer
-  src/i2c_ros/src/I2CAxisServer.cpp
+  src/i2c_ros/I2CAxisServer.cpp
 )
 
 # Link libraries
@@ -35,21 +33,34 @@ ament_target_dependencies(I2CAxisServer
   rclcpp
   axis
   geometry_msgs
+  tf2_ros
 )
 
-# Install libraries
-install(TARGETS
-  I2CHandle
-  I2CAxisServer
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
-)
+ament_export_targets(I2CHandle HAS_LIBRARY_TARGET)
+ament_export_targets(I2CAxisServer HAS_LIBRARY_TARGET)
 
 # Install header files
 install(DIRECTORY
-  include/${PROJECT_NAME}/
-  DESTINATION include/${PROJECT_NAME}
+  include/${PROJECT_NAME}
+  DESTINATION include
+)
+
+# Install libraries
+install(
+  TARGETS I2CHandle
+  EXPORT I2CHandle
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
+)
+install(
+  TARGETS I2CAxisServer
+  EXPORT I2CAxisServer
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
 )
 
 # Create executables
@@ -65,13 +76,13 @@ target_link_libraries(testi2c_node I2CHandle)
 target_link_libraries(testi2c I2CHandle)
 target_link_libraries(testserver I2CAxisServer I2CHandle)
 
-# Install executables
-install(TARGETS
-  testi2c_node
-  testi2c
-  testserver
-  DESTINATION lib/${PROJECT_NAME}
-)
+# install(TARGETS
+#   I2CHandle
+#   I2CAxisServer
+#   DESTINATION lib/${PROJECT_NAME}
+# )
+
+# ament_export_include_directories(include)
 
 # Create ament package
 ament_package()

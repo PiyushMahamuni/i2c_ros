@@ -30,7 +30,9 @@ I2CAxisServer::I2CAxisServer(const char *i2c_bus, const char *axisFile) : rclcpp
 
 bool I2CAxisServer::hardStopAxisCb(const axis::srv::HardStopAxis::Request::SharedPtr req, axis::srv::HardStopAxis::Response::SharedPtr res)
 {
-    RCLCPP_INFO(get_logger(), "hard_stop_axis called with: axis = %s", req->axis_name.data());
+// #ifdef DEBUG
+    // RCLCPP_INFO(get_logger(), "hard_stop_axis called with: axis = %s", req->axis_name.data());
+// #endif
     uint8_t cmd;
     cmd = 2;
     auto it = axisMap.find(req->axis_name);
@@ -53,7 +55,7 @@ bool I2CAxisServer::hardStopAxisCb(const axis::srv::HardStopAxis::Request::Share
         return true;
     }
 // #ifdef DEBUG
-    RCLCPP_INFO(get_logger(), "hard stop command executed successfully");
+    // RCLCPP_INFO(get_logger(), "hard stop command executed successfully");
 // #endif
     // we have lost the certainty of where given frame is after calling hardstop, so update the transform
     float pos;
@@ -64,7 +66,7 @@ bool I2CAxisServer::hardStopAxisCb(const axis::srv::HardStopAxis::Request::Share
 bool I2CAxisServer::moveAxisCb(const axis::srv::MoveAxis::Request::SharedPtr req, axis::srv::MoveAxis::Response::SharedPtr res)
 {
 // #ifdef DEBUG
-    RCLCPP_INFO(get_logger(), "move_axis called with: axis = %s, vmax = %f, acc = %f, s = %f", req->axis_name.data(), req->vmax, req->acc, req->s);
+    // RCLCPP_INFO(get_logger(), "move_axis called with: axis = %s, vmax = %f, acc = %f, s = %f", req->axis_name.data(), req->vmax, req->acc, req->s);
 // #endif
     const ssize_t size{5};
     uint8_t buff[size];
@@ -82,7 +84,7 @@ bool I2CAxisServer::moveAxisCb(const axis::srv::MoveAxis::Request::SharedPtr req
     memcpy(buff + 1, &Vmax, 4);
     I2CWritePacket packet{slave, buff, size};
 // #ifdef DEBUG
-    RCLCPP_INFO(get_logger(), "Setting Vmax  to %f (m/s or rad/s) via i2c bus", Vmax);
+    // RCLCPP_INFO(get_logger(), "Setting Vmax  to %f (m/s or rad/s) via i2c bus", Vmax);
 // #endif
     i2chandle.send(packet);
     if (!packet.isSuccess())
@@ -92,7 +94,7 @@ bool I2CAxisServer::moveAxisCb(const axis::srv::MoveAxis::Request::SharedPtr req
         return true;
     }
 // #ifdef DEBUG
-    RCLCPP_INFO(get_logger(), "Vmax set successfully!");
+    // RCLCPP_INFO(get_logger(), "Vmax set successfully!");
 // #endif
     // Send set acceleration in m/s^2 or rad/s^2 command over the i2c bus
     *buff = 10;
@@ -100,7 +102,7 @@ bool I2CAxisServer::moveAxisCb(const axis::srv::MoveAxis::Request::SharedPtr req
     memcpy(buff + 1, &acc, 4);
     I2CWritePacket packet2{slave, buff, size};
 // #ifdef DEBUG
-    RCLCPP_INFO(get_logger(), "Setting acc to %f (m/s2 or rad/s2) via i2c bus", acc);
+    // RCLCPP_INFO(get_logger(), "Setting acc to %f (m/s2 or rad/s2) via i2c bus", acc);
 // #endif
     i2chandle.send(packet2);
     if (!packet2.isSuccess())
@@ -110,7 +112,7 @@ bool I2CAxisServer::moveAxisCb(const axis::srv::MoveAxis::Request::SharedPtr req
         return true;
     }
 // #ifdef DEBUG
-    RCLCPP_INFO(get_logger(), "acc set successfully!");
+    // RCLCPP_INFO(get_logger(), "acc set successfully!");
 // #endif
     // Send set relative target in meter or radians command over the i2c bus
     *buff = 9;
@@ -118,7 +120,7 @@ bool I2CAxisServer::moveAxisCb(const axis::srv::MoveAxis::Request::SharedPtr req
     memcpy(buff + 1, &rt, 4);
     I2CWritePacket packet3{slave, buff, size};
 // #ifdef DEBUG
-    RCLCPP_INFO(get_logger(), "Setting s to %f (m or rad) via i2c bus", rt);
+    // RCLCPP_INFO(get_logger(), "Setting s to %f (m or rad) via i2c bus", rt);
 // #endif
     i2chandle.send(packet3);
     if (!packet3.isSuccess())
@@ -128,7 +130,7 @@ bool I2CAxisServer::moveAxisCb(const axis::srv::MoveAxis::Request::SharedPtr req
         return true;
     }
 // #ifdef DEBUG
-    RCLCPP_INFO(get_logger(), "s set successfully!");
+    // RCLCPP_INFO(get_logger(), "s set successfully!");
 // #endif
     // Send start running command over the i2c bus
     *buff = 5;
@@ -137,7 +139,7 @@ bool I2CAxisServer::moveAxisCb(const axis::srv::MoveAxis::Request::SharedPtr req
     if (clrPin)
         clrPin();
 // #ifdef DEBUG
-    RCLCPP_INFO(get_logger(), "Sending start running command over the i2c bus");
+    // RCLCPP_INFO(get_logger(), "Sending start running command over the i2c bus");
 // #endif
     i2chandle.send(packet4);
     if (!packet4.isSuccess())
@@ -147,7 +149,7 @@ bool I2CAxisServer::moveAxisCb(const axis::srv::MoveAxis::Request::SharedPtr req
         return true;
     }
 // #ifdef DEBUG
-    RCLCPP_INFO(get_logger(), "start running command send successfully!");
+    // RCLCPP_INFO(get_logger(), "start running command send successfully!");
 // #endif
     // set the pin back if the function is given for it
     if (setPin)
@@ -159,7 +161,7 @@ bool I2CAxisServer::moveAxisCb(const axis::srv::MoveAxis::Request::SharedPtr req
 bool I2CAxisServer::setAxisPosCb(const axis::srv::SetAxisPos::Request::SharedPtr req, axis::srv::SetAxisPos::Response::SharedPtr res)
 {
 // #ifdef DEBUG
-    RCLCPP_INFO(get_logger(), "set_axis_pos called with: axis = %s, pos = %f", req->axis_name.data(), req->pos);
+    // RCLCPP_INFO(get_logger(), "set_axis_pos called with: axis = %s, pos = %f", req->axis_name.data(), req->pos);
 // #endif
     const ssize_t size{5};
     uint8_t buff[size];
@@ -178,7 +180,7 @@ bool I2CAxisServer::setAxisPosCb(const axis::srv::SetAxisPos::Request::SharedPtr
     memcpy(buff + 1, &pos, 4);
     I2CWritePacket packet{slave, buff, size};
 // #ifdef DEBUG
-    RCLCPP_INFO(get_logger(), "Setting new positoin over the i2c bus");
+    // RCLCPP_INFO(get_logger(), "Setting new positoin over the i2c bus");
 // #endif
     i2chandle.send(packet);
     res->success = packet.isSuccess();
@@ -188,7 +190,7 @@ bool I2CAxisServer::setAxisPosCb(const axis::srv::SetAxisPos::Request::SharedPtr
         return true;
     }
 // #ifdef DEBUG
-    RCLCPP_INFO(get_logger(), "Position set successfully!");
+    // RCLCPP_INFO(get_logger(), "Position set successfully!");
 // #endif
     if (!updateTf(req->axis_name, pos))
     {
@@ -203,7 +205,7 @@ bool I2CAxisServer::setAxisPosCb(const axis::srv::SetAxisPos::Request::SharedPtr
 bool I2CAxisServer::setAxisStateCb(const axis::srv::SetAxisState::Request::SharedPtr req, axis::srv::SetAxisState::Response::SharedPtr res)
 {
 // #ifdef DEBUG
-    RCLCPP_INFO(get_logger(), "set_axis_state called with: axis = %s, state = %d", req->axis_name.data(), req->state);
+    // RCLCPP_INFO(get_logger(), "set_axis_state called with: axis = %s, state = %d", req->axis_name.data(), req->state);
 // #endif
     uint8_t buff;
     buff = req->state ? 4 : 3; // 4 - enable, 3 - disable
@@ -216,7 +218,7 @@ bool I2CAxisServer::setAxisStateCb(const axis::srv::SetAxisState::Request::Share
     }
     I2CWritePacket packet{it->second, buff};
 // #ifdef DEBUG
-    RCLCPP_INFO(get_logger(), "Setting axis state over the i2c bus");
+    // RCLCPP_INFO(get_logger(), "Setting axis state over the i2c bus");
 // #endif
     i2chandle.send(packet);
     res->success = packet.isSuccess();
@@ -225,7 +227,7 @@ bool I2CAxisServer::setAxisStateCb(const axis::srv::SetAxisState::Request::Share
         RCLCPP_ERROR(get_logger(), "Failed to set axis state for the slave: %d", it->second);
     }
 // #ifdef DEBUG
-    RCLCPP_INFO(get_logger(), "axis state set successfully over the i2c bus!");
+    // RCLCPP_INFO(get_logger(), "axis state set successfully over the i2c bus!");
 // #endif
     // update tf if the axis was just enabled.
     if (req->state)
@@ -242,7 +244,7 @@ bool I2CAxisServer::setAxisStateCb(const axis::srv::SetAxisState::Request::Share
 bool I2CAxisServer::softStopAxisCb(const axis::srv::SoftStopAxis::Request::SharedPtr req, axis::srv::SoftStopAxis::Response::SharedPtr res)
 {
 // #ifdef DEBUG
-    RCLCPP_INFO(get_logger(), "soft_stop_axis called with: axis = %s", req->axis_name.data());
+    // RCLCPP_INFO(get_logger(), "soft_stop_axis called with: axis = %s", req->axis_name.data());
 // #endif
     uint8_t buff;
     buff = 1;
@@ -257,7 +259,7 @@ bool I2CAxisServer::softStopAxisCb(const axis::srv::SoftStopAxis::Request::Share
     if (clrPin)
         clrPin();
 // #ifdef DEBUG
-    RCLCPP_INFO(get_logger(), "sending soft stop command over the i2c bus");
+    // RCLCPP_INFO(get_logger(), "sending soft stop command over the i2c bus");
 // #endif
     i2chandle.send(packet);
     res->success = packet.isSuccess();
@@ -267,7 +269,7 @@ bool I2CAxisServer::softStopAxisCb(const axis::srv::SoftStopAxis::Request::Share
         return true;
     }
 // #ifdef DEBUG
-    RCLCPP_INFO(get_logger(), "soft stop command send successfully!");
+    // RCLCPP_INFO(get_logger(), "soft stop command send successfully!");
 // #endif
     if (setPin)
         setPin();
@@ -282,7 +284,7 @@ bool I2CAxisServer::updateTf(const std::string &axisName, float &pos)
     int &slave{axisMap[axisName]};
     I2CWritePacket packet{slave, *buff};
 // #ifdef DEBUG
-    RCLCPP_INFO(get_logger(), "Requesting pos from axis: %s", axisName.c_str());
+    // RCLCPP_INFO(get_logger(), "Requesting pos from axis: %s", axisName.c_str());
 // #endif
     i2chandle.send(packet);
     if (!packet.isSuccess())
@@ -291,11 +293,11 @@ bool I2CAxisServer::updateTf(const std::string &axisName, float &pos)
         return false;
     }
 // #ifdef DEBUG
-    RCLCPP_INFO(get_logger(), "Request has been accepted!");
+    // RCLCPP_INFO(get_logger(), "Request has been accepted!");
 // #endif
     I2CReadPacket rpacket{slave, pos};
 // #ifdef DEBUG
-    RCLCPP_INFO(get_logger(), "Retrieving pos from axis: %x", axisName.c_str());
+    // RCLCPP_INFO(get_logger(), "Retrieving pos from axis: %x", axisName.c_str());
 // #endif
     i2chandle.receive(rpacket); // updates pos
     if (!rpacket.isSuccess())
@@ -304,7 +306,7 @@ bool I2CAxisServer::updateTf(const std::string &axisName, float &pos)
         return false;
     }
 // #ifdef DEBUG
-    RCLCPP_INFO(get_logger(), "Position retrieved successfully! pos = %f", pos);
+    // RCLCPP_INFO(get_logger(), "Position retrieved successfully! pos = %f", pos);
 // #endif
     tf2::Quaternion q;
     auto it{varyingMap.find(axisName)};
@@ -354,7 +356,7 @@ void I2CAxisServer::sendAllTransforms()
 {
     // Update tfs of soft stopped axes
     // iterate over all the elements of stopped
-    RCLCPP_INFO(get_logger(), "sendAllTransform is called"); // debug
+    // RCLCPP_INFO(get_logger(), "sendAllTransform is called"); // debug
     // while (!stopped.empty())
     // {
     //     std::string axis{stopped.front()};
@@ -364,7 +366,7 @@ void I2CAxisServer::sendAllTransforms()
     // }
     for (const auto &tf : tfs)
     {
-        RCLCPP_INFO(get_logger(), "Sending a transform"); // debug
+        // RCLCPP_INFO(get_logger(), "Sending a transform"); // debug
         float pos;
         updateTf(tf.first, pos);
         br->sendTransform(tf.second);

@@ -80,7 +80,7 @@ install(TARGETS
    testi2c_node
    testi2c
    testserver
-   DESTINATION lib/${PROECT_NAME}
+   DESTINATION lib/${PROJECT_NAME}
 )
 
 # Create ament package

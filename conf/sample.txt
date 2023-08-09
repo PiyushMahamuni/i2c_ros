@@ -1,1 +1,4 @@
-xt world 0 3
+zr map 6 3
+yt zr 2 4
+xt yt 1 5
+zt xt 3 6

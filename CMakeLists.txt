@@ -76,13 +76,12 @@ target_link_libraries(testi2c_node I2CHandle)
 target_link_libraries(testi2c I2CHandle)
 target_link_libraries(testserver I2CAxisServer I2CHandle)
 
-# install(TARGETS
-#   I2CHandle
-#   I2CAxisServer
-#   DESTINATION lib/${PROJECT_NAME}
-# )
-
-# ament_export_include_directories(include)
+install(TARGETS
+   testi2c_node
+   testi2c
+   testserver
+   DESTINATION lib/${PROECT_NAME}
+)
 
 # Create ament package
 ament_package()

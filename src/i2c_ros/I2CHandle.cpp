@@ -36,6 +36,7 @@ template I2CReadPacket::I2CReadPacket<long>(int slave, long& data);
 template I2CReadPacket::I2CReadPacket<unsigned long>(int slave, unsigned long& data);
 template I2CReadPacket::I2CReadPacket<unsigned int>(int slave, unsigned int& data);
 template I2CReadPacket::I2CReadPacket<uint8_t>(int slave, uint8_t& data);
+template I2CReadPacket::I2CReadPacket<bool>(int slave, bool& data);
 
 I2CWritePacket::I2CWritePacket(int slave, const uint8_t *const buff, ssize_t size) : I2CPacket{slave, const_cast<uint8_t* const>(buff), size}
 {
@@ -58,6 +59,7 @@ template I2CWritePacket::I2CWritePacket<long>(int slave, const long& data);
 template I2CWritePacket::I2CWritePacket<unsigned long>(int slave, const unsigned long& data);
 template I2CWritePacket::I2CWritePacket<unsigned int>(int slave, const unsigned int& data);
 template I2CWritePacket::I2CWritePacket<uint8_t>(int slave, const uint8_t& data);
+template I2CWritePacket::I2CWritePacket<bool>(int slave, const bool& data);
 
 I2CHandle::I2CHandle(const char *bus) : bus{bus}, fd{open(bus, O_RDWR)}
 {
